@@ -88,7 +88,7 @@ class AutoSuggestor {
             public void actionPerformed(ActionEvent ae) {//allows scrolling of labels in pop window (I know very hacky for now :))
 
                 ArrayList<SuggestionLabel> sls = getAddedSuggestionLabels();
-                int max = sls.size();
+                int max = 10;
 
                 if (max > 1) {//more than 1 suggestion
                     for (int i = 0; i < max; i++) {

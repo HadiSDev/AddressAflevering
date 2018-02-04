@@ -11,11 +11,10 @@ import java.util.Observer;
 import Model.Address;
 import Model.Reader;
 
-import static Controller.Main.getSuggestions;
 
+import static Controller.Main.getSuggestions;
 import static Controller.Main.sendInput;
-import static Model.Reader.getPostcodes;
-import static Model.Reader.getStreetnames;
+
 
 
 public class View implements Observer{
@@ -41,7 +40,7 @@ public class View implements Observer{
         window.add(userInput, BorderLayout.NORTH);
         window.add(userOutput, BorderLayout.CENTER);
 
-        autoSuggestor = new AutoSuggestor(userInput, window, getSuggestions(),Color.WHITE.brighter(),Color.BLUE, Color.RED, 0.75f);
+        //autoSuggestor = new AutoSuggestor(userInput, window, getSuggestions(),Color.WHITE.brighter(),Color.BLUE, Color.RED, 0.75f);
         window.pack();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);

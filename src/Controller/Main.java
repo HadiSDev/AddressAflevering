@@ -8,12 +8,10 @@ import View.View;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.stream.Stream;
 
 import Model.Reader;
 
-import static Model.Reader.getPostcodes;
-import static Model.Reader.getStreetnames;
+import static javafx.application.Application.launch;
 
 public class Main
 {
@@ -62,9 +60,9 @@ public class Main
         try {
             textField.addActionListener(a -> {
                 Address addr =Address.parse(textField.getText());
-                if(checkStreetName(checkPostCity(addr))!=null)
+                if(r.checkStreetName(r.checkPostCity(addr, zipCityList),streetList,m)!=null)
                 {
-                    model.add(checkStreetName(checkPostCity(addr)));
+                    model.add(r.checkStreetName(r.checkPostCity(addr, zipCityList),streetList,m));
                 }
 
                 textField.setText("");
@@ -76,39 +74,8 @@ public class Main
 
     }
 
-    public static Address checkPostCity(Address a) {
-        Address newAdd = a;
-
-        if (a.postcode() == null && a.city() != null) {
-            //no Postcode
-            //create new Address with new postcode
-            String temp = r.getKeyFromValue(newAdd.city());
-            String full = String.format("%s%s%s%s", newAdd.street(), newAdd.house(), temp, newAdd.city());
-            newAdd = Address.parse(full);
-        }
-        else if (a.postcode() != null && a.city() == null) {
-            //no city
-            //create new Address with new city
-            String temp = r.getPostcodes().get(newAdd.postcode());
-            String full = String.format("%s%s%s%s%s%s", newAdd.street(), newAdd.house(), newAdd.house(), newAdd.floor(), newAdd.postcode(), temp);
-            newAdd = Address.parse(full);
-        }
-        return newAdd;
-
-    }
-    public static Address checkStreetName(Address a)
-    {
-        Address newAdd = a;
-        if(!(r.getStreetnames().contains(newAdd.street().replaceAll("\\s+",""))))
-        {
-            m.remove(newAdd);
-            System.out.println("Street Name does not exist");
-            return null;
 
 
-        }
-        return newAdd;
-    }
 
     public static ArrayList<String> getSuggestions() {
         return suggestions;

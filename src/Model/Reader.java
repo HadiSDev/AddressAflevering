@@ -15,10 +15,10 @@ public class Reader
 {
 
 
-    private static List<String> streetnames = new ArrayList<>();
-    private static HashMap<String, String> postcodes = new HashMap<>();
+    private List<String> streetnames = new ArrayList<>();
+    private HashMap<String, String> postcodes = new HashMap<>();
 
-    public static void readStreets() throws IOException
+    public void readStreets() throws IOException
     {
 
         File street = new File("src\\Externals\\streetnames.txt");
@@ -41,7 +41,7 @@ public class Reader
 
     }
 
-    public static void readPostCodes() throws IOException
+    public void readPostCodes() throws IOException
     {
         String filePath = "src\\Externals\\postnumre.txt";
 
@@ -66,24 +66,74 @@ public class Reader
         }*/
         reader.close();
     }
-    public static List<String> getStreetnames() {
+    public List<String> getStreetnames() {
         return streetnames;
     }
-
-    public static HashMap<String, String> getPostcodes() {
-        return postcodes;
-    }
-    public static String getKeyFromValue(String value)
+    public String getKeyFromValue(String value)
     {
         for(String o : postcodes.keySet())
         {
-            if(postcodes.get(o).equals(value))
+            if(postcodes.get(o).equalsIgnoreCase(value))
             {
                 return o;
             }
         }
         return null;
     }
+    public Address checkPostCity(Address a, HashMap<String, String> postcodeCity) {
+        Address newAdd = a;
+
+        if (a.postcode() == null && a.city() != null) {
+            //no Postcode
+            //create new Address with new postcode
+            String temp = getKeyFromValue(newAdd.city());
+            String full = String.format("%s%s%s%s", newAdd.street(), newAdd.house(), temp, newAdd.city());
+            newAdd = Address.parse(full);
+        }
+        else if (a.postcode() != null && a.city() == null) {
+            //no city
+            //create new Address with new city
+            String temp = postcodeCity.get(newAdd.postcode());
+            String full="";
+            if(newAdd.floor()!=null&&newAdd.side()!=null)
+            {
+                full = String.format("%s%s%s%s%s%s", newAdd.street(), newAdd.house(), newAdd.floor(), newAdd.side(), newAdd.postcode(), temp);
+            }
+            else if(newAdd.floor()==null&&newAdd.side()!=null)
+            {
+                full = String.format("%s%s%s%s%s", newAdd.street(), newAdd.house(), newAdd.side(), newAdd.postcode(), temp);
+            }
+            else if(newAdd.floor()!=null&&newAdd.side()==null)
+            {
+                full = String.format("%s%s%s%s%s", newAdd.street(), newAdd.house(), newAdd.floor(), newAdd.postcode(), temp);
+            }
+            else
+            {
+                full = String.format("%s%s%s%s", newAdd.street(), newAdd.house(), newAdd.postcode(), temp);
+            }
+            newAdd = Address.parse(full);
+        }
+        return newAdd;
+
+    }
+    public Address checkStreetName(Address a, ArrayList<String> streetList, Model m)
+    {
+        Address newAdd = a;
+        if(!(streetList.contains(newAdd.street().replaceAll("\\s+",""))))
+        {
+            m.remove(newAdd);
+            System.out.println("Street Name does not exist");
+            return null;
+
+
+        }
+        return newAdd;
+    }
+
+    public HashMap<String, String> getPostcodes() {
+        return postcodes;
+    }
+
 
 
 }
