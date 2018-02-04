@@ -14,10 +14,17 @@ public class Model extends Observable implements Iterable<Address>{
         addresses = new ArrayList<>();
     }
 
-    public void add(Address a) {
+    public void add(Address a)
+    {
         addresses.add(a);
 
         System.out.println("Added address " + a);
+        setChanged();
+        notifyObservers();
+    }
+    public void remove(Address a)
+    {
+        addresses.remove(a);
         setChanged();
         notifyObservers();
     }

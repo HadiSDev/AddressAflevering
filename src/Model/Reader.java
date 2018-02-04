@@ -16,12 +16,12 @@ public class Reader
 
 
     private static List<String> streetnames = new ArrayList<>();
-    private static HashMap<String, String> postnumre = new HashMap<>();
+    private static HashMap<String, String> postcodes = new HashMap<>();
 
     public static void readStreets() throws IOException
     {
 
-        File street = new File("C:/Users/mulle/Desktop/AddressV2/src/Model/streetnames.txt");
+        File street = new File("src\\Externals\\streetnames.txt");
         try
         {
             Scanner scannerStreet = new Scanner(street);
@@ -37,13 +37,13 @@ public class Reader
             e.printStackTrace();
         }
 
-        streetnames.forEach(System.out::println);
+/*        streetnames.forEach(System.out::println);*/
 
     }
 
-    public static void readPostnumbersCity() throws IOException
+    public static void readPostCodes() throws IOException
     {
-        String filePath = "C:/Users/mulle/Desktop/AddressV2/src/Model/postnumre.txt";
+        String filePath = "src\\Externals\\postnumre.txt";
 
         String line;
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -54,30 +54,30 @@ public class Reader
             {
                 String key = parts[0];
                 String value = parts[1];
-                postnumre.put(key, value);
+                postcodes.put(key, value);
             } else {
                 System.out.println("ignoring line: " + line);
             }
         }
 
-        for (String key : postnumre.keySet())
+/*        for (String key : postcodes.keySet())
         {
-            System.out.println(key + " " + postnumre.get(key));
-        }
+            System.out.println(key + " " + postcodes.get(key));
+        }*/
         reader.close();
     }
     public static List<String> getStreetnames() {
         return streetnames;
     }
 
-    public static HashMap<String, String> getPostnumre() {
-        return postnumre;
+    public static HashMap<String, String> getPostcodes() {
+        return postcodes;
     }
     public static String getKeyFromValue(String value)
     {
-        for(String o : postnumre.keySet())
+        for(String o : postcodes.keySet())
         {
-            if(postnumre.get(o).equals(value))
+            if(postcodes.get(o).equals(value))
             {
                 return o;
             }
