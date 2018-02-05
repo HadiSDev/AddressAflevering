@@ -66,7 +66,7 @@ public class Address {
                     floor(matcher.group("floor")).
                     side(matcher.group("side")).
                     postcode(matcher.group("postcode")).
-                    street(matcher.group("street")).build();
+                    street(matcher.group("street").trim()).build();
         }
         throw new IllegalArgumentException("Invalid address " + s);
     }

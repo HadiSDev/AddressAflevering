@@ -4,12 +4,12 @@ import java.util.*;
 
 import Model.Model;
 import Model.Address;
-import View.View;
 
 import javax.swing.*;
 import java.io.IOException;
 
 import Model.Reader;
+import View.View;
 
 import static javafx.application.Application.launch;
 

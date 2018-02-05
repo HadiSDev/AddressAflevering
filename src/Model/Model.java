@@ -8,7 +8,11 @@ import java.util.Observable;
 public class Model extends Observable implements Iterable<Address>{
 
 
-    private static List<Address> addresses;
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    private List<Address> addresses;
 
     public Model() {
         addresses = new ArrayList<>();

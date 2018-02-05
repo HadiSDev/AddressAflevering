@@ -29,7 +29,7 @@ public class Reader
             //br returns as stream and convert it into a List
             while (scannerStreet.hasNextLine())
             {
-                streetnames.add(scannerStreet.nextLine());
+                streetnames.add(scannerStreet.nextLine().toLowerCase());
             }
 
 
@@ -119,7 +119,7 @@ public class Reader
     public Address checkStreetName(Address a, ArrayList<String> streetList, Model m)
     {
         Address newAdd = a;
-        if(!(streetList.contains(newAdd.street().replaceAll("\\s+",""))))
+        if(!(streetList.contains((newAdd.street().trim()).toLowerCase())))
         {
             m.remove(newAdd);
             System.out.println("Street Name does not exist");
