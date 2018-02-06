@@ -56,17 +56,13 @@ public class Main
         });
     }
 
-    public static void sendInput(JTextField textField, Model model) {
+    public static void sendInput(String input, Model model) {
         try {
-            textField.addActionListener(a -> {
-                Address addr =Address.parse(textField.getText());
-                if(r.checkStreetName(r.checkPostCity(addr, zipCityList),streetList,m)!=null)
-                {
-                    model.add(r.checkStreetName(r.checkPostCity(addr, zipCityList),streetList,m));
-                }
-
-                textField.setText("");
-            });
+            Address addr =Address.parse(input);
+            if(r.checkStreetName(r.correctPostCity(addr, zipCityList),streetList,m)!=null)
+            {
+                model.add(r.checkStreetName(r.correctPostCity(addr, zipCityList),streetList,m));
+            }
 
         } catch (Exception e) {
 

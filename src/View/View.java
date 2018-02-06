@@ -1,10 +1,13 @@
 package View;
 import Model.Model;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 import Model.Address;
+import Model.Reader;
 
 import static Controller.Main.sendInput;
 
@@ -13,29 +16,86 @@ import static Controller.Main.sendInput;
 public class View implements Observer{
     JFrame window;
     JTextField userInput;
-    JTextArea userOutput;
     Model model;
+    Reader reader;
 
-    public View(Model m)
+    public View(Model m, Reader r)
     {
+        try
+        {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        }
+        catch(Exception e)
+        {
+            System.out.println("LAF Failed");
+        }
         model = m;
         model.addObserver(this);
+        reader = r;
+        reader.addObserver(this);
         window = new JFrame("Address Viewer");
-        userInput = new JTextField();
-        userInput.setPreferredSize(new Dimension(500,30));
+        JPanel northpanel = new JPanel(new GridLayout(0,3));
+        JLabel helptext = new JLabel("Enter your address");
+        helptext.setHorizontalAlignment(SwingConstants.CENTER);
+        northpanel.add(helptext);
 
-        userOutput = new JTextArea();
-        userOutput.setPreferredSize(new Dimension(500,300));
-        userOutput.setEditable(false);
+        userInput = new JTextField();
+        //userInput.setPreferredSize(new Dimension(500,30));
+        northpanel.add(userInput);
+
+        JButton enter = new JButton("Create Address");
+        northpanel.add(enter);
+
+        DefaultListModel<String> modelSuggestion = new DefaultListModel<>();
+        JList<String> suggestions = new JList<>(modelSuggestion);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(suggestions);
+        JPanel centerpane = new JPanel();
+        centerpane.add(scrollPane);
+        scrollPane.setPreferredSize(new Dimension(500,400));
+
+
         window.setLayout(new BorderLayout());
-        window.add(userInput, BorderLayout.NORTH);
-        window.add(userOutput, BorderLayout.CENTER);
+        window.add(northpanel, BorderLayout.NORTH);
+        window.add(centerpane, BorderLayout.CENTER);
 
         window.pack();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);
 
-        sendInput(userInput, model);
+        enter.addActionListener(e ->
+        {
+            sendInput(userInput.getText(), model);
+            userInput.setText("");
+        });
+
+        userInput.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e)
+            {
+                setSuggestions();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e)
+            {
+                setSuggestions();
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e)
+            {
+                setSuggestions();
+            }
+            public void setSuggestions()
+            {
+                modelSuggestion.removeAllElements();
+                r.findSuggestedAddresses(userInput.getText());
+
+
+            }
+        });
 
 
     }
@@ -51,12 +111,13 @@ public class View implements Observer{
      * @param arg an argument passed to the <code>notifyObservers</code>
      */
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(Observable o, Object arg)
+    {
         StringBuilder sb = new StringBuilder();
         for (Address a: model) {
             sb.append(a).append("\n\n");
 
         }
-        userOutput.setText(sb.toString());
     }
+
 }

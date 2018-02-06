@@ -5,13 +5,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import Exception.AddressNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 
-public class Reader
+public class Reader extends Observable
 {
 
 
@@ -80,7 +83,7 @@ public class Reader
         }
         return null;
     }
-    public Address checkPostCity(Address a, HashMap<String, String> postcodeCity) {
+    public Address correctPostCity(Address a, HashMap<String, String> postcodeCity) {
         Address newAdd = a;
 
         if (a.postcode() == null && a.city() != null) {
@@ -128,6 +131,69 @@ public class Reader
         }
         return newAdd;
     }
+
+    public void findSuggestedAddresses(String inputText)
+    {
+        final String regex = "(?<street>([0-9.]{1,3})?[a-zA-ZåæøÅÆØ. ]+)?\\s*(?<house>\\d{1,3}[A-Z]?)?\\s*[,]*\\s*(?<floor>(st|k(\\d{1,2})?|[1-9]{1,2}))?\\s*[,]*\\s*(?<side>(tv|th|mf|[1-9]{1,2}))?\\s*[,]*\\s*(?<postcode>\\d{4})?\\s*(?<city>[a-zA-ZåæøÅÆØ., ]+)?";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(inputText);
+        StringBuilder sb = new StringBuilder();
+        int counter = 0;
+
+
+
+        if(matcher.matches())
+        {
+            if(matcher.group("street")!=null)
+            {
+                try(Stream<String> streetStream = Files.lines(Paths.get("src//externals//streetnames.txt")).filter(s-> s.toLowerCase().contains(matcher.group("street").toLowerCase()))) {
+
+                    sb.append(matcher.group("street")+" ");
+                    counter++;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(matcher.group("house")!= null)
+                {
+                    sb.append(matcher.group("house")+", ");
+                    counter++;
+                }
+                if(matcher.group("floor")!=null)
+                {
+                    sb.append(matcher.group("floor")+", ");
+                    counter++;
+
+                }
+                if(matcher.group("side")!=null)
+                {
+                    sb.append(matcher.group("side")+", ");
+                    counter++;
+                }
+                if(matcher.group("postcode")!=null)
+                {
+
+                }
+                if(matcher.group("city")!=null)
+                {
+
+                }
+
+            }
+        }
+
+    }
+    public void checkPostCity(String input, StringBuilder sb, Matcher matcher)
+    {
+        try (Stream<String> postCityStream = Files.lines(Paths.get("src//externals//postnumre.txt")).filter(s -> s.toLowerCase().contains(matcher.group("street").toLowerCase())))
+        {
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
 
     public HashMap<String, String> getPostcodes() {
         return postcodes;
