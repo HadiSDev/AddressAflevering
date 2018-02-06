@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
+import Exception.AddressNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,8 +122,7 @@ public class Reader
         if(!(streetList.contains((newAdd.street().trim()).toLowerCase())))
         {
             m.remove(newAdd);
-            System.out.println("Street Name does not exist");
-            return null;
+            throw new AddressNotFoundException("Streetname not Found!: ", newAdd.street());
 
 
         }

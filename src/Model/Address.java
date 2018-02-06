@@ -1,10 +1,7 @@
 package Model;
 
 import java.util.regex.*;
-
-//import  Model.Reader.getKetFromValue;
-//import  Model.Reader.getPostnumre;
-//import  Model.Reader.getStreetnames;
+import Exception.AddressNotFoundException;
 
 public class Address {
     private final String street, house, floor, side, postcode, city;
@@ -68,6 +65,7 @@ public class Address {
                     postcode(matcher.group("postcode")).
                     street(matcher.group("street").trim()).build();
         }
-        throw new IllegalArgumentException("Invalid address " + s);
+
+        throw new AddressNotFoundException("Address not typed correctly!",s);
     }
 }
