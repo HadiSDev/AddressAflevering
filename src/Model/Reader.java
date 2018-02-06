@@ -146,10 +146,11 @@ public class Reader extends Observable
         {
             if(matcher.group("street")!=null)
             {
-                try(Stream<String> streetStream = Files.lines(Paths.get("src//externals//streetnames.txt")).filter(s-> s.toLowerCase().contains(matcher.group("street").toLowerCase()))) {
 
-                    sb.append(matcher.group("street")+" ");
-                    counter++;
+                try(Stream<String> streetStream = Files.lines(Paths.get("src//externals//streetnames.txt")).filter(s-> s.toLowerCase().contains(matcher.group("street").toLowerCase()))) {
+                    sb.append(streetStream.filter(s-> s.contains(matcher.group("street"))));
+                    setChanged();
+                    notifyObservers(sb.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -171,12 +172,18 @@ public class Reader extends Observable
                 }
                 if(matcher.group("postcode")!=null)
                 {
-
+                    checkPostCity(matcher.group("postcode"), sb, matcher);
+                    counter++;
                 }
                 if(matcher.group("city")!=null)
                 {
+                    checkPostCity(matcher.group("city"), sb, matcher);
+                    counter++;
 
                 }
+                setChanged();
+                notifyObservers(sb.toString());
+
 
             }
         }
@@ -184,9 +191,14 @@ public class Reader extends Observable
     }
     public void checkPostCity(String input, StringBuilder sb, Matcher matcher)
     {
-        try (Stream<String> postCityStream = Files.lines(Paths.get("src//externals//postnumre.txt")).filter(s -> s.toLowerCase().contains(matcher.group("street").toLowerCase())))
+        try (Stream<String> postCityStream = Files.lines(Paths.get("src//externals//postnumre.txt")).filter(s -> s.toLowerCase().contains(input.toLowerCase())))
         {
+            postCityStream.forEach(e->{
+                sb.append(e.toString());
+            });
 
+            setChanged();
+            notifyObservers(sb.toString());
         }
         catch (IOException e)
         {

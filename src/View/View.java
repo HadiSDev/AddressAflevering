@@ -18,7 +18,8 @@ public class View implements Observer{
     JTextField userInput;
     Model model;
     Reader reader;
-
+    JList<String> suggestions;
+    DefaultListModel<String> modelSuggestion;
     public View(Model m, Reader r)
     {
         try
@@ -46,8 +47,8 @@ public class View implements Observer{
         JButton enter = new JButton("Create Address");
         northpanel.add(enter);
 
-        DefaultListModel<String> modelSuggestion = new DefaultListModel<>();
-        JList<String> suggestions = new JList<>(modelSuggestion);
+        modelSuggestion = new DefaultListModel<>();
+        suggestions = new JList<>(modelSuggestion);
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(suggestions);
         JPanel centerpane = new JPanel();
@@ -113,11 +114,7 @@ public class View implements Observer{
     @Override
     public void update(Observable o, Object arg)
     {
-        StringBuilder sb = new StringBuilder();
-        for (Address a: model) {
-            sb.append(a).append("\n\n");
-
-        }
+        modelSuggestion.addElement((String) arg+"\n\n");
     }
 
 }

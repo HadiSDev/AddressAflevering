@@ -52,7 +52,7 @@ public class Main
 
         SwingUtilities.invokeLater(() -> {
             m = new Model();
-            View v = new View(m);
+            View v = new View(m,r);
         });
     }
 
