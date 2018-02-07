@@ -132,7 +132,7 @@ public class Reader extends Observable
         return newAdd;
     }
 
-    public void findSuggestedAddresses(String inputText)
+    public void findSuggestedAddresses(String inputText) //TODO: this method is not workin corectly yet!!
     {
         final String regex = "(?<street>([0-9.]{1,3})?[a-zA-ZåæøÅÆØ. ]+)?\\s*(?<house>\\d{1,3}[A-Z]?)?\\s*[,]*\\s*(?<floor>(st|k(\\d{1,2})?|[1-9]{1,2}))?\\s*[,]*\\s*(?<side>(tv|th|mf|[1-9]{1,2}))?\\s*[,]*\\s*(?<postcode>\\d{4})?\\s*(?<city>[a-zA-ZåæøÅÆØ., ]+)?";
         Pattern pattern = Pattern.compile(regex);
@@ -140,17 +140,22 @@ public class Reader extends Observable
         StringBuilder sb = new StringBuilder();
         int counter = 0;
 
-
-
         if(matcher.matches())
         {
             if(matcher.group("street")!=null)
             {
-
                 try(Stream<String> streetStream = Files.lines(Paths.get("src//externals//streetnames.txt")).filter(s-> s.toLowerCase().contains(matcher.group("street").toLowerCase()))) {
-                    sb.append(streetStream.filter(s-> s.contains(matcher.group("street"))));
-                    setChanged();
-                    notifyObservers(sb.toString());
+
+                    streetStream.forEach(street->{
+                        if(inputText.length()>3)
+                        {
+
+                            sb.append(street);
+                            setChanged();
+                            notifyObservers(sb.toString());
+                        }
+                    });
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -172,12 +177,12 @@ public class Reader extends Observable
                 }
                 if(matcher.group("postcode")!=null)
                 {
-                    checkPostCity(matcher.group("postcode"), sb, matcher);
+                    checkPostCity(matcher.group("postcode"), sb);
                     counter++;
                 }
                 if(matcher.group("city")!=null)
                 {
-                    checkPostCity(matcher.group("city"), sb, matcher);
+                    checkPostCity(matcher.group("city"), sb);
                     counter++;
 
                 }
@@ -189,16 +194,17 @@ public class Reader extends Observable
         }
 
     }
-    public void checkPostCity(String input, StringBuilder sb, Matcher matcher)
+    public void checkPostCity(String input, StringBuilder sb)
     {
         try (Stream<String> postCityStream = Files.lines(Paths.get("src//externals//postnumre.txt")).filter(s -> s.toLowerCase().contains(input.toLowerCase())))
         {
             postCityStream.forEach(e->{
                 sb.append(e.toString());
+                setChanged();
+                notifyObservers(sb.toString());
             });
 
-            setChanged();
-            notifyObservers(sb.toString());
+
         }
         catch (IOException e)
         {

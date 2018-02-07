@@ -55,7 +55,6 @@ public class View implements Observer{
         centerpane.add(scrollPane);
         scrollPane.setPreferredSize(new Dimension(500,400));
 
-
         window.setLayout(new BorderLayout());
         window.add(northpanel, BorderLayout.NORTH);
         window.add(centerpane, BorderLayout.CENTER);
@@ -114,7 +113,7 @@ public class View implements Observer{
     @Override
     public void update(Observable o, Object arg)
     {
-        modelSuggestion.addElement((String) arg+"\n\n");
+        modelSuggestion.addElement((String) arg);
     }
 
 }
